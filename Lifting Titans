@@ -1,0 +1,86 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/UI%20Made%20by%20Aztup"))();
+
+local A = library:CreateSection("Glizzy")
+local Credits = library:CreateSection("Credits")
+
+------------------Scripts---------------
+
+A:Label("Kleine Cheate Sachen für Lifting")
+A:Toggle("AutoLift",function(arg)
+    if arg then
+        _G.AutoLift = true 
+        while wait() and _G.AutoLift do
+        game:GetService("ReplicatedStorage").Remotes.OnLift:FireServer()
+       end
+    else
+        _G.AutoLift = false
+    end
+end)
+
+A:Toggle("Auto Sell",function(arg)
+    if arg then
+        _G.Sell = true 
+        while wait() and _G.Sell do
+        game:GetService("ReplicatedStorage").Remotes.Sell:FireServer()
+       end
+    else
+        _G.Sell = false
+    end
+end)
+
+A:Toggle("x4 Boost",function(arg)
+    if arg then
+        _G.Eggy = true 
+        while wait() and _G.Eggy do
+        game:GetService("ReplicatedStorage").Remotes.UpdatePlaytimeBoost:FireServer()
+       end
+    else
+        _G.Eggy = false
+    end
+end)
+
+------------------Egg---------------
+
+A:Dropdown("Eggs",{"Devil Egg","Furture Egg"},function(arg) 
+if arg == "Devil Egg" then
+_G.Cord1 = true
+elseif arg == "Furture Egg" then
+_G.Cord2 = true
+    end
+end)
+A:Toggle("Auto Egg Open x3",function(arg)
+    if arg then
+        _G.Eggy = true 
+        while wait() and _G.Eggy do
+while wait() and _G.Cord1 do           
+    game:GetService("ReplicatedStorage").Remotes.HatchEgg:InvokeServer("Devil Egg",3)
+end
+while wait() and _G.Cord2 do           
+    game:GetService("ReplicatedStorage").Remotes.HatchEgg:InvokeServer("Furture Egg",3)
+end
+       end
+    else
+        _G.Eggy = false
+        _G.Cord1 = false
+        _G.Cord2 = false
+    end
+end)
+
+------------------Gui---------------
+A:Button("Lifting GUI",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lightzki/thunderhub/main/script/LiftingTitans.lua"))()
+end)
+------------------Credits---------------
+
+Credits:Label("UI by Aztup")
+Credits:Button("Destroy GUI", function()
+game:GetService("CoreGui").ScreenGui:Destroy()
+end)
+
+------------------Anti AFK---------------
+
+for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
+v:Disable()
+end
+
+library:Ready();
