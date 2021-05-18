@@ -8,55 +8,34 @@ local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Gr33n
 --Name:Button("Name",function()
 --Name:Slider("Name",{min = 0, max = 100, precise = true},function(slidervalue)
 
-local Scripts = library:CreateSection("Scripts")
-local Misc = library:CreateSection("Misc")
+local Main = library:CreateSection("Main")
 local Credits = library:CreateSection("Credits")
 
----------------Scripts------------------
-
-Scripts:Label("Scripts")
-Scripts:Button("Infinite Yield", function()
-        loadstring(game:HttpGet(("https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/Infinite%20Yield"), true))()
+Main:Label("Main")
+Main:Button("AutoDetect",function()
+	if game.PlaceId == 6531005851 then -- Lifting Titans
+		loadstring(game:HttpGet(('https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/Lifting%20Titans'),true))()
+	elseif game.PlaceId == 6544175281 then -- Food Magnet Sim
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/PferdeReiter/Scripts/main/Food%20Magnet%20Simulator"))()
+	elseif game.PlaceId == 4952780297 then -- Combat Rift
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Introvert1337/SpooderScripts/main/CombatRift/MainScript.lua"))()
+	elseif game.PlaceId == 2512643572 then -- BGS
+		loadstring(game:HttpGet(("http://roguefamily.com/script/streleziaBGSbeta/script"),true))()
+	else
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/Main%20Gui"))()
+	end
 end)
-----------------Misc------------------
-
-Misc:Box('Speed', function(Speed)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Speed
-end)
-Misc:Box('Jump Height', function(Jump)
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = Jump
-end)
-Misc:Button("FullBright", function()
-    loadstring(game:HttpGet(("https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/Fullbright"), true))()
-end)
-Misc:Button("NoClip with E", function ()
-    noclip = false
-game:GetService('RunService').Stepped:connect(function()
-if noclip then
-game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-end
-end)
-plr = game.Players.LocalPlayer
-mouse = plr:GetMouse()
-mouse.KeyDown:connect(function(key)
-
-if key == "e" then
-noclip = not noclip
-game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-end
-end)
-end)
-
------------------Credits---------------
+------------------Credits---------------
 
 Credits:Label("UI by Aztup")
 Credits:Button("Destroy GUI", function()
-game:GetService("CoreGui").ScreenGui:Destroy()
+	game:GetService("CoreGui").ScreenGui:Destroy()
 end)
+
 ------------------Anti AFK---------------
 
 for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
-v:Disable()
+	v:Disable()
 end
 
 library:Ready();
