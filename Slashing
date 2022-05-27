@@ -1,0 +1,308 @@
+if not game:IsLoaded() then game.Loaded:Wait() end
+
+
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Idled)) do
+    v:Disable()
+end
+
+local VirtualUser = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end)
+
+
+
+_G.Kill = false
+_G.SlashRebirth = false
+_G.KrakenRaid = false
+_G.Chest = false
+_G.AotArena = false
+_G.World = "World1"
+
+
+
+local player = game:GetService("Players").LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Subtract = ReplicatedStorage.Remotes.Game.Subtract
+local AirSlice = ReplicatedStorage.Remotes.Game.AirSlice
+local Rebirth = ReplicatedStorage.Remotes.Other.Rebirth
+
+
+
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/Gr33nShadow51234/Glizzy/main/Mercury"))()
+
+local GUI = Mercury:Create{
+    Name = "Vibe Hub",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Green,
+    Link = "https://vibe-house.de/"
+}
+
+
+
+local Tab = GUI:Tab{
+	Name = "Home",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+local Tab1 = GUI:Tab{
+	Name = "Misc",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+Tab:Toggle{
+	Name = "Kraken Raid",
+	StartingState = _G.KrakenRaid,
+	Description = nil,
+	Callback = function(state) 
+        _G.KrakenRaid = state
+    end
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.KrakenRaid then
+            for i,v in pairs(workspace.WORLDS["KrakenRaid"].Game.Tentacles:GetChildren()) do
+                pcall(function()
+                    local args = {
+                        ["sliceStartPoint"] = Vector3.new(0,0,0),
+                        ["Dir"] = Vector3.new(0,0,0),
+                        ["N"] = 1,
+                        ["CFrame"] = CFrame.new(0,0,0),
+                        ["sliceEndPoint"] = Vector3.new(0,0,0),
+                        ["Size"] = Vector3.new(0,0,0)
+                    }
+                    
+                    player.Character.PrimaryPart.CFrame = v.HitBox.Part.CFrame
+                    Subtract:FireServer(v.HitBox.Part,args)
+                    wait()
+                end)
+            end
+        end
+    end
+end)
+
+
+
+Tab:Toggle{
+	Name = "AoTArena",
+	StartingState = _G.AotArena,
+	Description = nil,
+	Callback = function(state)        
+        _G.AotArena = state
+    end
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.AotArena then
+            for i,v in pairs(workspace.WORLDS["AotArena"].SpawnedTitans:GetChildren()) do
+                pcall(function()
+                    local args = {
+                        ["sliceStartPoint"] = Vector3.new(0,0,0),
+                        ["Dir"] = Vector3.new(0,0,0),
+                        ["N"] = 1,
+                        ["CFrame"] = CFrame.new(0,0,0),
+                        ["sliceEndPoint"] = Vector3.new(0,0,0),
+                        ["Size"] = Vector3.new(0,0,0)
+                    }
+                    
+                    while _G.AotArena and workspace.WORLDS["AotArena"].SpawnedTitans:IsAncestorOf(v) and task.wait() do
+                        player.Character.PrimaryPart.CFrame = v.ObjectOriginPart.CFrame
+                        Subtract:FireServer(v.ObjectOriginPart,args)
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+
+
+Tab:Toggle{
+	Name = "Forbiden Chest",
+	StartingState = _G.Chest,
+	Description = nil,
+	Callback = function(state)
+        _G.Chest = state
+    end
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.Chest then
+            local nearest = nil
+            for i,v in pairs(workspace.WORLDS["ForbidenChestMap"].Gameplay.SlicableObjects:GetChildren()) do
+                for i2,v2 in pairs(v:GetChildren()) do
+                    pcall(function()
+                        local part = v2:FindFirstChildWhichIsA("Part")
+                        if nearest == nil or (part.Position - player.Character.PrimaryPart.Position).Magnitude < (nearest.Position - player.Character.PrimaryPart.Position).Magnitude then
+                            nearest = part
+                        end
+                    end)
+                end
+            end
+            pcall(function()
+                local args = {
+                    ["sliceStartPoint"] = Vector3.new(0,0,0),
+                    ["Dir"] = Vector3.new(0,0,0),
+                    ["N"] = 1,
+                    ["CFrame"] = CFrame.new(0,0,0),
+                    ["sliceEndPoint"] = Vector3.new(0,0,0),
+                    ["Size"] = Vector3.new(0,0,0)
+                }
+                    
+                while _G.Chest and workspace.WORLDS["ForbidenChestMap"].Gameplay.SlicableObjects:IsAncestorOf(nearest) and task.wait() do
+                    Subtract:FireServer(nearest,args)
+                end
+            end)
+        end
+    end
+end)
+
+
+
+Tab:Toggle{
+	Name = "Slash Rebirth",
+    StartingState = _G.SlashRebirth,
+	Description = nil,
+	Callback = function(state)    
+        _G.SlashRebirth = state
+    end
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.SlashRebirth then
+            AirSlice:FireServer(true)
+            Rebirth:FireServer(30000)
+        end
+    end
+end)
+
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Farm World",
+	StartingText = "World 1",
+	Description = nil,
+	Items = {
+		{"World 1", "World1"},
+        {"World 2", "World2"},
+        {"World 3", "World3"},
+	},
+	Callback = function(item) _G.World = item end
+
+}
+
+Tab:Toggle{
+	Name = "Auto Kill",
+	StartingState = _G.Kill,
+	Description = nil,
+	Callback = function(state) 
+        _G.Kill = state
+    end
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.Kill then 
+            local nearest = nil
+            for i,v in pairs(workspace.WORLDS[_G.World].Gameplay.SlicableObjects:GetChildren()) do
+                for i2,v2 in pairs(v:GetChildren()) do
+                    pcall(function()
+                        local part = v2:FindFirstChildWhichIsA("Part")
+                        if nearest == nil or (part.Position - player.Character.PrimaryPart.Position).Magnitude < (nearest.Position - player.Character.PrimaryPart.Position).Magnitude then
+                            nearest = part
+                        end
+                    end)
+                end
+            end
+            pcall(function()
+                local args = {
+                    ["sliceStartPoint"] = Vector3.new(0,0,0),
+                    ["Dir"] = Vector3.new(0,0,0),
+                    ["N"] = 1,
+                    ["CFrame"] = CFrame.new(0,0,0),
+                    ["sliceEndPoint"] = Vector3.new(0,0,0),
+                    ["Size"] = Vector3.new(0,0,0)
+                }
+                    
+                Subtract:FireServer(nearest,args)
+            end)
+        end
+    end
+end)
+
+
+
+GUI:Notification{
+	Title = "Alert",
+	Text = "U can close the GUI with RIGHTSHIFT key or change it in the settings",
+	Duration = 8,
+	Callback = function() end
+}
+
+
+
+GUI:Credit{
+	Name = "Nico",
+	Description = "Made the script",
+	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1189604",
+	Discord = "Nico K.#0002"
+}
+
+
+
+GUI:Credit{
+	Name = "ImperatorWeeds",
+	Description = "Helped Nico",
+	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1337989",
+	Discord = "ImperatorWeeds#8893"
+}
+
+
+
+Tab1:Button{
+	Name = "Toggle GUI",
+	Description = "Toggle GUI with the DELETE key",
+    Callback = function() end
+}
+
+
+
+Tab1:Button{
+	Name = "Rejoin Game",
+	Description = nil,
+	Callback = function() game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer) end 
+}
+
+
+
+Tab1:Slider{
+	Name = "Walk Speed",
+	Default = 16,
+	Min = 0,
+	Max = 250,
+	Callback = function(value, Finish) 
+        if Finish then player.Character.Humanoid.WalkSpeed = value end
+    end
+}
+
+
+
+Tab1:Slider{
+	Name = "Jump Power",
+	Default = 50,
+	Min = 0,
+	Max = 250,
+	Callback = function(value, Finish)
+        if Finish then player.Character.Humanoid.JumpPower = value end 
+    end
+}
