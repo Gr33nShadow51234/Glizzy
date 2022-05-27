@@ -17,11 +17,13 @@ end)
 
 
 _G.Kill = false
+_G.Kill2 = false
 _G.SlashRebirth = false
 _G.KrakenRaid = false
 _G.Chest = false
 _G.AotArena = false
 _G.World = "World1"
+_G.World1 = "World1"
 
 
 
@@ -30,6 +32,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Subtract = ReplicatedStorage.Remotes.Game.Subtract
 local AirSlice = ReplicatedStorage.Remotes.Game.AirSlice
 local Rebirth = ReplicatedStorage.Remotes.Other.Rebirth
+local args = {
+    ["sliceStartPoint"] = Vector3.new(0,0,0),
+    ["Dir"] = Vector3.new(0,0,0),
+    ["N"] = 1,
+    ["CFrame"] = CFrame.new(0,0,0),
+    ["sliceEndPoint"] = Vector3.new(0,0,0),
+    ["Size"] = Vector3.new(0,0,0)
+}
 
 
 
@@ -72,15 +82,6 @@ spawn(function()
         if _G.KrakenRaid then
             for i,v in pairs(workspace.WORLDS["KrakenRaid"].Game.Tentacles:GetChildren()) do
                 pcall(function()
-                    local args = {
-                        ["sliceStartPoint"] = Vector3.new(0,0,0),
-                        ["Dir"] = Vector3.new(0,0,0),
-                        ["N"] = 1,
-                        ["CFrame"] = CFrame.new(0,0,0),
-                        ["sliceEndPoint"] = Vector3.new(0,0,0),
-                        ["Size"] = Vector3.new(0,0,0)
-                    }
-                    
                     player.Character.PrimaryPart.CFrame = v.HitBox.Part.CFrame
                     Subtract:FireServer(v.HitBox.Part,args)
                     wait()
@@ -106,15 +107,6 @@ spawn(function()
         if _G.AotArena then
             for i,v in pairs(workspace.WORLDS["AotArena"].SpawnedTitans:GetChildren()) do
                 pcall(function()
-                    local args = {
-                        ["sliceStartPoint"] = Vector3.new(0,0,0),
-                        ["Dir"] = Vector3.new(0,0,0),
-                        ["N"] = 1,
-                        ["CFrame"] = CFrame.new(0,0,0),
-                        ["sliceEndPoint"] = Vector3.new(0,0,0),
-                        ["Size"] = Vector3.new(0,0,0)
-                    }
-                    
                     while _G.AotArena and workspace.WORLDS["AotArena"].SpawnedTitans:IsAncestorOf(v) and task.wait() do
                         player.Character.PrimaryPart.CFrame = v.ObjectOriginPart.CFrame
                         Subtract:FireServer(v.ObjectOriginPart,args)
@@ -151,15 +143,6 @@ spawn(function()
                 end
             end
             pcall(function()
-                local args = {
-                    ["sliceStartPoint"] = Vector3.new(0,0,0),
-                    ["Dir"] = Vector3.new(0,0,0),
-                    ["N"] = 1,
-                    ["CFrame"] = CFrame.new(0,0,0),
-                    ["sliceEndPoint"] = Vector3.new(0,0,0),
-                    ["Size"] = Vector3.new(0,0,0)
-                }
-                    
                 while _G.Chest and workspace.WORLDS["ForbidenChestMap"].Gameplay.SlicableObjects:IsAncestorOf(nearest) and task.wait() do
                     Subtract:FireServer(nearest,args)
                 end
@@ -188,6 +171,53 @@ spawn(function()
     end
 end)
 
+
+
+Tab:Toggle{
+	Name = "Auto Boss Kill",
+	StartingState = _G.Kill2,
+	Description = nil,
+	Callback = function(state) 
+        _G.Kill2 = state
+    end
+}
+
+local Enemy = {
+    "Gyutaro",
+    "Beerus",
+    "Duck"
+}
+
+spawn(function()
+    while task.wait() do
+        if _G.Kill2 then
+            local nearest = nil
+            for i,v in pairs(workspace.WORLDS["World3"].Gameplay.SlicableObjects:GetChildren()) do
+                if table.find(Enemy, v.Name) then
+                    for i2,v2 in pairs(v:GetChildren()) do
+                        pcall(function()
+                            local part = v2:FindFirstChildWhichIsA("Part")
+                            if nearest == nil or (part.Position - player.Character.PrimaryPart.Position).Magnitude < (nearest.Position - player.Character.PrimaryPart.Position).Magnitude then
+                                nearest = part
+                            end
+                        end)
+                    end
+                end    
+            end
+            pcall(function()
+                while _G.Kill2 and workspace.WORLDS["World3"].Gameplay.SlicableObjects:IsAncestorOf(nearest) and task.wait() do
+                    player.Character.PrimaryPart.CFrame = nearest.CFrame
+                    Subtract:FireServer(nearest,args)
+                end
+                player.Character.PrimaryPart.CFrame = workspace.TriggerAreas.Sell.SellPart.CFrame + Vector3.new(0,-5,0)
+                wait()
+                player.Character.PrimaryPart.CFrame = workspace.TriggerAreas.Sell.SellPart.CFrame
+                player.Character.PrimaryPart.Velocity = Vector3.new(0,0,0)
+                player.Character.PrimaryPart.RotVelocity = Vector3.new(0,0,0)
+            end)
+        end
+    end
+end)
 
 
 local MyDropdown = Tab:Dropdown{
@@ -226,16 +256,7 @@ spawn(function()
                     end)
                 end
             end
-            pcall(function()
-                local args = {
-                    ["sliceStartPoint"] = Vector3.new(0,0,0),
-                    ["Dir"] = Vector3.new(0,0,0),
-                    ["N"] = 1,
-                    ["CFrame"] = CFrame.new(0,0,0),
-                    ["sliceEndPoint"] = Vector3.new(0,0,0),
-                    ["Size"] = Vector3.new(0,0,0)
-                }
-                    
+            pcall(function() 
                 Subtract:FireServer(nearest,args)
             end)
         end
@@ -308,3 +329,6 @@ Tab1:Slider{
         if Finish then player.Character.Humanoid.JumpPower = value end 
     end
 }
+
+warn(Made by Nico K.)
+warn(Felix Helper)
