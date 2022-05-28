@@ -294,7 +294,7 @@ GUI:Credit{
 
 Tab1:Button{
 	Name = "Toggle GUI",
-	Description = "Toggle GUI with the DELETE key",
+	Description = "Toggle GUI with the RIGHTSHIFT key",
     Callback = function() end
 }
 
