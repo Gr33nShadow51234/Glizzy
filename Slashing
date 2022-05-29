@@ -23,7 +23,6 @@ _G.KrakenRaid = false
 _G.Chest = false
 _G.AotArena = false
 _G.World = "World1"
-_G.World1 = "World1"
 
 
 
@@ -330,5 +329,5 @@ Tab1:Slider{
     end
 }
 
-warn(Made by Nico K.)
-warn(Felix Helper)
+warn("Made by Nico K.")
+warn("Felix Helper")
